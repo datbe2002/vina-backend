@@ -3,10 +3,13 @@ const cors = require("cors");
 const router = require('./routes');
 require("dotenv").config();
 const app = express();
-
+// const url = "http://localhost:3000"
 const db = require('./dbconnect');
 const { port } = require("./constants/envConst");
 db.connect();
+
+app.use('/uploads', express.static(__dirname + '/../uploads'))
+// app.use(express.static('uploads'))
 
 app.use(cors());
 app.use(express.json())

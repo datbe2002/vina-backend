@@ -3,12 +3,20 @@ const mongoose = require('mongoose');
 const blogSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true,
+    },
+    summary: {
+        type: String,
     },
     content: {
         type: String,
-        required: true,
     },
+    cover: {
+        type: String,
+    },
+    author: {
+        type: String,
+        default: "Admin"
+    }
 
 }, { versionKey: false, timestamps: true });
 
