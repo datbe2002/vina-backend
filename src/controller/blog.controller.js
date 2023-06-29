@@ -1,4 +1,4 @@
-const path = require('path');
+const path2 = require('path');
 const Blog = require('../schema/blog.schema');
 const fs = require('fs');
 const blogController = {
@@ -31,7 +31,7 @@ const blogController = {
         try {
             const { id } = req.params;
             const blog = await Blog.findById(id);
-            const coverPath = path.join(__dirname, '..', blog.cover);
+            const coverPath = path2.join(__dirname, '..', blog.cover);
             const srcIndex = coverPath.indexOf('src');
             const sanitizedCoverPath = coverPath.slice(0, srcIndex) + coverPath.slice(srcIndex + 4);
             fs.unlinkSync(sanitizedCoverPath);
@@ -77,14 +77,24 @@ const blogController = {
 
     async updateBlog(req, res) {
         let newPath = null
+        const { id, title, summary, content } = req.body
         if (req.file) {
+            //delete existing path
+            const blog = await Blog.findById(id);
+            const coverPath = path2.join(__dirname, '..', blog.cover);
+            const srcIndex = coverPath.indexOf('src');
+            const sanitizedCoverPath = coverPath.slice(0, srcIndex) + coverPath.slice(srcIndex + 4);
+            fs.unlinkSync(sanitizedCoverPath);
+
+
             const { originalname, path } = req.file;
             const parts = originalname.split('.');
             const ext = parts[parts.length - 1];
-            const newPath = path + '.' + ext;
+            newPath = path + '.' + ext;
             fs.renameSync(path, newPath);
+
         }
-        const { id, title, summary, content } = req.body
+
         const doc = await Blog.findById(id)
         const updated = await Blog.findOneAndUpdate({ _id: id }, {
             title: title,
