@@ -31,10 +31,12 @@ const blogController = {
         try {
             const { id } = req.params;
             const blog = await Blog.findById(id);
-            const coverPath = path2.join(__dirname, '..', blog.cover);
-            const srcIndex = coverPath.indexOf('src');
-            const sanitizedCoverPath = coverPath.slice(0, srcIndex) + coverPath.slice(srcIndex + 4);
-            fs.unlinkSync(sanitizedCoverPath);
+            if (req.file) {
+                const coverPath = path2.join(__dirname, '..', blog.cover);
+                const srcIndex = coverPath.indexOf('src');
+                const sanitizedCoverPath = coverPath.slice(0, srcIndex) + coverPath.slice(srcIndex + 4);
+                fs.unlinkSync(sanitizedCoverPath);
+            }
             const deleted = await Blog.findByIdAndDelete(id)
             res.status(200).json({ message: "delete success" });
 
